@@ -142,6 +142,7 @@ public class RegisterationActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
         final android.app.AlertDialog waitingdialog = new SpotsDialog(RegisterationActivity.this);
         waitingdialog.show();
+        //addedd
     }
 
     //initialization for th evariables......
