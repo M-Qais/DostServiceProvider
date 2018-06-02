@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Dost</string>
+    <string name="facebook_app_id">227726657960269</string>
+    <string name="fb_login_protocol_scheme">fb227726657960269</string>
+    <string name="title_activity_booking">Map</string>
+    <string name="google_direction_api">AIzaSyBF7FRoZQz9tkcX2b-527nvsW7K_zlT0yI</string>
+</resources>
