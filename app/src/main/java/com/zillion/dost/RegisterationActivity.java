@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -71,8 +72,6 @@ public class RegisterationActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleSignInClient;
     private FirebaseAuth.AuthStateListener mAuthListener;
-
-
 
 
     @Override
@@ -141,6 +140,8 @@ public class RegisterationActivity extends AppCompatActivity {
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleSignInClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+        final android.app.AlertDialog waitingdialog = new SpotsDialog(RegisterationActivity.this);
+        waitingdialog.show();
     }
 
     //initialization for th evariables......
@@ -302,6 +303,7 @@ public class RegisterationActivity extends AppCompatActivity {
         mGooglesignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 signIn();
             }
         });
@@ -309,12 +311,60 @@ public class RegisterationActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public void onBackPressed() {
         // code here to show dialog
 //        super.onBackPressed();
-        finish();
+        /*finish();
+        moveTaskToBack(true);*/
+
+        //alert dialogue option .... swag :-P
+
+        dialogueForExit();
+
+
+    }
+
+    public void dialogueForExit(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                RegisterationActivity.this);
+        // set title
+        alertDialogBuilder.setTitle("Exit");
+        alertDialogBuilder.setCancelable(true);
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("Are you sure, You want to exit !")
+                .setCancelable(true)
+                .setPositiveButton( "Yes",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        try {
+                            //so some work
+
+                            finishAffinity();
+                            System.exit(0);
+                        } catch (Exception e) {
+                            //Exception
+                        }
+                    }
+                })
+                .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+                        //do something if you need
+                        dialog.cancel();
+                    }
+                }).setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
     }
 
     //dialogue for the register user....
@@ -479,7 +529,7 @@ public class RegisterationActivity extends AppCompatActivity {
 
                 }
 
-                final android.app.AlertDialog waitingdialog=new SpotsDialog(RegisterationActivity.this);
+                final android.app.AlertDialog waitingdialog = new SpotsDialog(RegisterationActivity.this);
                 waitingdialog.show();
                 //Login.....
 
