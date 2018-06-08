@@ -16,12 +16,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -36,7 +33,6 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdate;
@@ -58,7 +54,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.zillion.Common.Common;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.zillion.dost.Common.Common;
+import com.zillion.dost.Model.Token;
 import com.zillion.dost.Remote.IGoogleAPI;
 
 import org.json.JSONArray;
@@ -84,7 +82,6 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
 
     private LocationRequest mlocationRequest;
     private GoogleApiClient mGoogleApiClient;
-    private Location mLAstLocation;
 
     private static int UPDATE_INTERVAL = 5000;
     private static int FASTEST_INTERVAL = 3000;
@@ -276,10 +273,23 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
 
         setUpLocation();
         mService = Common.getGoogleAPI();
+
+        updateFireBaseToken();
+    }
+
+    private void updateFireBaseToken() {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference tokens = db.getReference(Common.token_tbl);
+
+        Token token = new Token(FirebaseInstanceId.getInstance().getToken());
+
+        tokens.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .setValue(token);
+
     }
 
     private void getDirection() {
-        currentPosition = new LatLng(mLAstLocation.getLatitude(), mLAstLocation.getLongitude());
+        currentPosition = new LatLng(Common.mLAstLocation.getLatitude(), Common.mLAstLocation.getLongitude());
         String requestApi = null;
         try {
             requestApi = "https://maps.googleapis.com/maps/api/directions/json?"+
@@ -518,13 +528,13 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        mLAstLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLAstLocation != null) {
+        Common.mLAstLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (Common.mLAstLocation != null) {
 
             if (location_switch_booking.isChecked()) {
 
-                final double latitude = mLAstLocation.getLatitude();
-                final double longitude = mLAstLocation.getLongitude();
+                final double latitude = Common.mLAstLocation.getLatitude();
+                final double longitude = Common.mLAstLocation.getLongitude();
 
                 //update to firebase
                 mGeoFire.setLocation(uid, new GeoLocation(latitude, longitude), new GeoFire.CompletionListener() {
@@ -601,7 +611,7 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onLocationChanged(Location location) {
-        mLAstLocation = location;
+        Common.mLAstLocation = location;
         displayLocation();
     }
 

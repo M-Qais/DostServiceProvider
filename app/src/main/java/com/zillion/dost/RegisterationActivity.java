@@ -379,22 +379,21 @@ public class RegisterationActivity extends AppCompatActivity {
         final MaterialEditText edtPhone = view.findViewById(R.id.etPhone);
         final MaterialEditText edtProfession = view.findViewById(R.id.etProfession);
 
+        Button register_button = view.findViewById(R.id.dialog_register_button);
+
         final AlertDialog alertDialog = new AlertDialog.Builder(RegisterationActivity.this)
                 .setView(view)
-                .setPositiveButton(android.R.string.ok, null)
-                .setNegativeButton(android.R.string.cancel, null)
+//                .setPositiveButton(android.R.string.ok, null)
+//                .setNegativeButton(android.R.string.cancel, null)
                 .show();
 
-        Button positive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+//        Button positive = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+//
+//        Button negative = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
 
-        Button negative = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-        positive.setOnClickListener(new View.OnClickListener() {
-
+        register_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Do Your thing
-
                 if (TextUtils.isEmpty(edtEmail.getText().toString())) {
                     Snackbar.make(view, "Please enter Email Address", Snackbar.LENGTH_SHORT).show();
                     return;
@@ -466,13 +465,6 @@ public class RegisterationActivity extends AppCompatActivity {
                 });
             }
         });
-
-        negative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
     }
 
     public final static boolean isValidEmail(String target) {
@@ -488,7 +480,7 @@ public class RegisterationActivity extends AppCompatActivity {
     private void showLogindialog() {
 
        /* AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Login");
+        dialog.set`Title("Login");
         dialog.setMessage("Please Enter Email for SignIn....");*/
 
         LayoutInflater layoutInflater = LayoutInflater.from(this);
@@ -496,23 +488,22 @@ public class RegisterationActivity extends AppCompatActivity {
         final MaterialEditText edtlEmail = view.findViewById(R.id.etEmail);
         final MaterialEditText edtlpass = view.findViewById(R.id.etPassword);
 
+        final Button signin_button = view.findViewById(R.id.login_dialog_Signin_button);
 
 //        dialog.setView(view);
         final AlertDialog alertDialoglogin = new AlertDialog.Builder(RegisterationActivity.this)
                 .setView(view)
-                .setPositiveButton(android.R.string.ok, null)
-                .setNegativeButton(android.R.string.cancel, null)
+//                .setPositiveButton(android.R.string.ok, null)
+//                .setNegativeButton(android.R.string.cancel, null)
                 .show();
+//
+//        Button positivelogin = alertDialoglogin.getButton(AlertDialog.BUTTON_POSITIVE);
+//
+//        Button negativelogin = alertDialoglogin.getButton(AlertDialog.BUTTON_NEGATIVE);
 
-        Button positivelogin = alertDialoglogin.getButton(AlertDialog.BUTTON_POSITIVE);
-
-        Button negativelogin = alertDialoglogin.getButton(AlertDialog.BUTTON_NEGATIVE);
-
-        positivelogin.setOnClickListener(new View.OnClickListener() {
+        signin_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-//                btnsignin.setEnabled(false);
-
+            public void onClick(View view) {
                 //check validation....
                 if (TextUtils.isEmpty(edtlEmail.getText().toString())) {
                     Snackbar.make(view, "Please enter Email Address", Snackbar.LENGTH_SHORT).show();
@@ -553,15 +544,5 @@ public class RegisterationActivity extends AppCompatActivity {
                 });
             }
         });
-
-
-        negativelogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialoglogin.dismiss();
-            }
-        });
-
-
     }
 }
