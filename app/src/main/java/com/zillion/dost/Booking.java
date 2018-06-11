@@ -117,6 +117,7 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
 
 
     private IGoogleAPI mService;
+
     //presence system
     DatabaseReference onlineRef,currentUserRef;
 
@@ -213,8 +214,10 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
 
         //presense reference
         onlineRef=FirebaseDatabase.getInstance().getReference().child(".info/connected");
+
         currentUserRef=FirebaseDatabase.getInstance().getReference(Common.driver_tbl)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         onlineRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

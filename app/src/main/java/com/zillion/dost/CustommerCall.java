@@ -1,29 +1,16 @@
 package com.zillion.dost;
 
-import android.animation.ValueAnimator;
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.JointType;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.model.SquareCap;
-import com.google.gson.JsonObject;
 import com.zillion.dost.Common.Common;
 import com.zillion.dost.Model.FCMResponse;
 import com.zillion.dost.Model.Notification;
@@ -35,8 +22,6 @@ import com.zillion.dost.Remote.IGoogleAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,7 +36,7 @@ public class CustommerCall extends AppCompatActivity {
 
     IGoogleAPI mService;
     String customerId;
-    IFCMService mfcmService;
+    IFCMService iFCMService;
     double lat,lng;
 
     @Override
@@ -71,7 +56,7 @@ public class CustommerCall extends AppCompatActivity {
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
 
-        mfcmService=Common.getFCMService();
+        iFCMService = Common.getFCMService();
 
         if(getIntent() != null)
         {
@@ -113,22 +98,24 @@ public class CustommerCall extends AppCompatActivity {
         Notification notification = new Notification("Notice!","Driver has canceled your Request !!!");
 
         Sender sender = new Sender(token.getToken(),notification);
-        mfcmService.sendMessage(sender).enqueue(new Callback<FCMResponse>() {
-            @Override
-            public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
-                if(response.body().success==1)
-                {
-                    Toast.makeText(CustommerCall.this, "Cancelled", Toast.LENGTH_SHORT).show();
-                    finish();
 
-                }
-            }
+        iFCMService.sendMessage(sender)
+                .enqueue(new Callback<FCMResponse>() {
+                    @Override
+                    public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                        if(response.body().success==1)
+                        {
+                            Toast.makeText(CustommerCall.this, "Cancelled", Toast.LENGTH_SHORT).show();
+                            finish();
 
-            @Override
-            public void onFailure(Call<FCMResponse> call, Throwable t) {
+                        }
+                    }
 
-            }
-        });
+                    @Override
+                    public void onFailure(Call<FCMResponse> call, Throwable t) {
+
+                    }
+                });
     }
 
     private void getDirection(double latitude, double longitude) {
