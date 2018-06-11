@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
-        btn = findViewById(R.id.logout);
+//        btn = findViewById(R.id.logout);
 
         mAuth = FirebaseAuth.getInstance();
 

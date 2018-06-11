@@ -51,9 +51,11 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.SquareCap;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.zillion.dost.Common.Common;
 import com.zillion.dost.Model.Token;
@@ -97,7 +99,7 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
 
     String uid;
 
-    //caeer animation
+    //car animation
     private List<LatLng> polyLineList;
     private Marker carMarker;
     private float v;
@@ -115,6 +117,9 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
 
 
     private IGoogleAPI mService;
+    //presence system
+    DatabaseReference onlineRef,currentUserRef;
+
 
     Runnable drawPathRunnable = new Runnable() {
         @Override
@@ -206,6 +211,25 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
             }
         };
 
+        //presense reference
+        onlineRef=FirebaseDatabase.getInstance().getReference().child(".info/connected");
+        currentUserRef=FirebaseDatabase.getInstance().getReference(Common.driver_tbl)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        onlineRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+//                this will remove the value of driver form table when we click on offline toggle
+                currentUserRef.onDisconnect().removeValue();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         ///initview
 
         location_switch_booking = findViewById(R.id.location_switch);
@@ -213,6 +237,9 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
+
+                    //set connected when on
+                    FirebaseDatabase.getInstance().goOnline();
 
                     startLocationUpdate();
                     displayLocation();
@@ -223,6 +250,8 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
                     // do something, the isChecked will be
                     // true if the switch is in the On position
 
+                        //set disconnected when offline
+                    FirebaseDatabase.getInstance().goOffline();
                     stopLocationUpdates();
                     mcurrent.remove();
                     mMap.clear();

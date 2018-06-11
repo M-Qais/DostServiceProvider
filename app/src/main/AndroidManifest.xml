@@ -66,19 +66,22 @@
             android:name=".Booking"
             android:label="@string/title_activity_booking" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".CustommerCall"></activity>
+        <activity android:name=".CustommerCall" />
 
         <service android:name=".Service.MyFirebaseIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".Service.MyFirebaaseMessaging">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <service android:name=".Service.MyFirebaaseMessaging">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
+        <activity
+            android:name=".DriverTracking"
+            android:label="@string/title_activity_driver_tracking"></activity>
     </application>
 
 </manifest>

@@ -1,12 +1,16 @@
 package com.zillion.dost;
 
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +25,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.SquareCap;
 import com.google.gson.JsonObject;
 import com.zillion.dost.Common.Common;
+import com.zillion.dost.Model.FCMResponse;
+import com.zillion.dost.Model.Notification;
+import com.zillion.dost.Model.Sender;
+import com.zillion.dost.Model.Token;
 import com.zillion.dost.Remote.IFCMService;
 import com.zillion.dost.Remote.IGoogleAPI;
 
@@ -39,8 +47,12 @@ public class CustommerCall extends AppCompatActivity {
     TextView txttime, txtDistance, txtAddress;
 
     MediaPlayer mediaPlayer;
+    Button btnAccept,btnDecline;
 
     IGoogleAPI mService;
+    String customerId;
+    IFCMService mfcmService;
+    double lat,lng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,19 +64,71 @@ public class CustommerCall extends AppCompatActivity {
         txttime = (TextView) findViewById(R.id.txtTime);
         txtDistance = (TextView) findViewById(R.id.txtDistance);
         txtAddress = (TextView) findViewById(R.id.txtAddress);
+        btnAccept=(Button)findViewById(R.id.btnAccept);
+        btnDecline=(Button)findViewById(R.id.btnDecline);
 
         mediaPlayer = MediaPlayer.create(this, R.raw.ringtone);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
 
+        mfcmService=Common.getFCMService();
+
         if(getIntent() != null)
         {
-            double lat = getIntent().getDoubleExtra("lat", -1.0);
-            double lng = getIntent().getDoubleExtra("lng", -1.0);
+             lat = getIntent().getDoubleExtra("lat", -1.0);
+             lng = getIntent().getDoubleExtra("lng", -1.0);
+            customerId=getIntent().getStringExtra("customer");
+
 
             getDirection(lat, lng);
 
         }
+
+        btnAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CustommerCall.this,DriverTracking.class);
+
+                //send customer location to new activity using put extra :-)
+                intent.putExtra("lat",lat);
+                intent.putExtra("lng",lng);
+                startActivity(intent);
+                finish();
+            }
+        });
+        btnDecline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!TextUtils.isEmpty(customerId)){
+
+                    cancelBooking(customerId);
+                }
+            }
+        });
+    }
+
+    private void cancelBooking(String customerId) {
+
+        Token token = new Token(customerId);
+        Notification notification = new Notification("Notice!","Driver has canceled your Request !!!");
+
+        Sender sender = new Sender(token.getToken(),notification);
+        mfcmService.sendMessage(sender).enqueue(new Callback<FCMResponse>() {
+            @Override
+            public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                if(response.body().success==1)
+                {
+                    Toast.makeText(CustommerCall.this, "Cancelled", Toast.LENGTH_SHORT).show();
+                    finish();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FCMResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     private void getDirection(double latitude, double longitude) {

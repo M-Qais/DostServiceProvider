@@ -20,6 +20,8 @@ public class MyFirebaaseMessaging extends FirebaseMessagingService {
 
         intent.putExtra("lat", customerLocation.latitude);
         intent.putExtra("lng", customerLocation.longitude);
+        intent.putExtra("customer", remoteMessage.getNotification().getTitle());
+
 
         startActivity(intent);
     }
