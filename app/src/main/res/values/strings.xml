@@ -15,4 +15,7 @@
     <string name="phone">Phone#</string>
     <string name="profession">Profession</string>
     <string name="title_activity_driver_tracking">Map</string>
+    <string name="ofline">Ofline</string>
+    <string name="online">Online</string>
+    <string name="my_status">My status</string>
 </resources>

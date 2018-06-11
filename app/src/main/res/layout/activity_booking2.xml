@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:maps="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,12 +9,12 @@
         android:id="@+id/layout_panel_go"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
         
         <fragment
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
             android:layout_margin="10dp"
             android:id="@+id/place_auto_fill_fragement"
             android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
@@ -68,19 +67,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="3"
                 android:checked="true"
-                android:text="My status"
-                android:textOff="Ofline"
-                android:textOn="Online" />
-
-            <Button
-                android:id="@+id/find_user_btn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="7"
-                android:text="Find User" />
-
+                android:text="@string/my_status"
+                android:textOff="@string/ofline"
+                android:textOn="@string/online" />
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

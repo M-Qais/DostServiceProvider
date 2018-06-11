@@ -102,7 +102,6 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
             }
     }
 
-
     private void displayLocation() {
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -128,22 +127,17 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
 //                mMap.animateCamera(cam.newLatLngZoom(new LatLng(latitude,longitude),17.0f));.
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude),17.0f));
 
-                if(direction!=null)
-                    direction.remove();  //this will remove old direction..
-                    getDirection();
-
-
-
-
+            if(direction!=null)
+                direction.remove();  //this will remove old direction..
+                getDirection();
 
         }
           else {
                 Log.d("check", "cannot get your location");
-                Toast.makeText(this, "Cannot get your Location..", Toast.LENGTH_SHORT).show();
-
 
             }
         }
+
     private void getDirection(){
 
          LatLng currentPosition = new LatLng(Common.mLAstLocation.getLatitude(), Common.mLAstLocation.getLongitude());
@@ -184,7 +178,6 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
     }
 
     private class ParserTask extends AsyncTask<String,Integer,List<List<HashMap<String,String>>>>
-
     {
         ProgressDialog mDialog = new ProgressDialog(DriverTracking.this);
 
@@ -247,6 +240,7 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
             direction = mMap.addPolyline(polylineOptions);
         }
     }
+
     private void createLocationRequest() {
 
         mlocationRequest = new LocationRequest();
@@ -304,8 +298,6 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
                 .strokeWidth(7.0f)
 
         );
-
-
     }
 
     @Override

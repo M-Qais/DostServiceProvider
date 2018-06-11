@@ -201,6 +201,8 @@ public class CustommerCall extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mediaPlayer.start();
+//        mediaPlayer = MediaPlayer.create(this, R.raw.ringtone);
+//        mediaPlayer.setLooping(true);
+//        mediaPlayer.start();
     }
 }
