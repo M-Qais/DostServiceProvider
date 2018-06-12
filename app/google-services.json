@@ -15,12 +15,32 @@
       },
       "oauth_client": [
         {
+          "client_id": "244889939845-2pa12nbefcf61sp500gk4127enk6u81u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zillion.dost",
+            "certificate_hash": "735eb4ad3e3786cfb3504223a23b4f6356ea6cfd"
+          }
+        },
+        {
+          "client_id": "244889939845-bcme3rm2cavpojcdsrni8hf8qavnhumi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zillion.dost",
+            "certificate_hash": "73947f2459ade49aaf77ff920ce9e456868ffbcc"
+          }
+        },
+        {
           "client_id": "244889939845-2k1gr58q1f6l8um4o4i2bcuv6a0fcbbh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.zillion.dost",
             "certificate_hash": "c9c366703ddfb9e6579ecc3dc1763c31a702d24e"
           }
+        },
+        {
+          "client_id": "244889939845-d5ut2gc354f6s7k7cq42s73lg1oq15pq.apps.googleusercontent.com",
+          "client_type": 3
         },
         {
           "client_id": "244889939845-d5ut2gc354f6s7k7cq42s73lg1oq15pq.apps.googleusercontent.com",
@@ -52,19 +72,39 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:244889939845:android:2071adf9cc1d44b4",
+        "mobilesdk_app_id": "1:244889939845:android:088cdf17bce34e6d",
         "android_client_info": {
-          "package_name": "qais.mirza.dost"
+          "package_name": "com.zillion.dostrider"
         }
       },
       "oauth_client": [
         {
-          "client_id": "244889939845-s44s1naajgju9etkjuhuoe5obpjujujd.apps.googleusercontent.com",
+          "client_id": "244889939845-sb20u35ecfasrd3eviaqe7rvk86ahejn.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "qais.mirza.dost",
+            "package_name": "com.zillion.dostrider",
+            "certificate_hash": "e99d12bcf1e94526a0dd07b1f6d8bb3cc9c73f6a"
+          }
+        },
+        {
+          "client_id": "244889939845-sdlp1vns4jm1mfl3s8ao2bgma3ok0psc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zillion.dostrider",
             "certificate_hash": "c9c366703ddfb9e6579ecc3dc1763c31a702d24e"
           }
+        },
+        {
+          "client_id": "244889939845-bk4h5kj4r2ap2rm2gkg6mv6fgk3t369g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zillion.dostrider",
+            "certificate_hash": "735eb4ad3e3786cfb3504223a23b4f6356ea6cfd"
+          }
+        },
+        {
+          "client_id": "244889939845-d5ut2gc354f6s7k7cq42s73lg1oq15pq.apps.googleusercontent.com",
+          "client_type": 3
         },
         {
           "client_id": "244889939845-d5ut2gc354f6s7k7cq42s73lg1oq15pq.apps.googleusercontent.com",

@@ -1,5 +1,6 @@
 package com.zillion.dost;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,6 +52,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.rilixtech.CountryCodePicker;
 import com.zillion.dost.Model.User;
 
 import java.util.List;
@@ -73,6 +76,10 @@ public class RegisterationActivity extends AppCompatActivity {
     private GoogleApiClient mGoogleSignInClient;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
+    CountryCodePicker ccp;
+    AppCompatEditText edtPhoneNumber;
+    private Button continueButton;
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -94,6 +101,8 @@ public class RegisterationActivity extends AppCompatActivity {
 
         init();
         Listeners();
+
+        ccp.registerPhoneNumberTextView(edtPhoneNumber);
 
 //        init for firebase
         mAuth = FirebaseAuth.getInstance();
@@ -153,6 +162,11 @@ public class RegisterationActivity extends AppCompatActivity {
         rootlayout = findViewById(R.id.root_layout);
         mGooglesignin = findViewById(R.id.login_google_btn);
 //        serviceproviderlayout=findViewById(R.id.service_provider_layout);
+
+        ccp = (CountryCodePicker) findViewById(R.id.ccp);
+        edtPhoneNumber = (AppCompatEditText) findViewById(R.id.phone_number_edt);
+
+        continueButton = (Button) findViewById(R.id.continu_button);
 
     }
 
@@ -309,6 +323,22 @@ public class RegisterationActivity extends AppCompatActivity {
             }
         });
 
+        continueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(RegisterationActivity.this)
+                        .setTitle("Confirme")
+                        .setMessage("Is " + edtPhoneNumber.getText().toString() + " your correct Phone number ?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Toast.makeText(RegisterationActivity.this, "Yaay", Toast.LENGTH_SHORT).show();
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
+            }
+        });
+
     }
 
 
@@ -393,7 +423,7 @@ public class RegisterationActivity extends AppCompatActivity {
 
         register_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 if (TextUtils.isEmpty(edtEmail.getText().toString())) {
                     Snackbar.make(view, "Please enter Email Address", Snackbar.LENGTH_SHORT).show();
                     return;
@@ -426,6 +456,8 @@ public class RegisterationActivity extends AppCompatActivity {
                     return;
                 }
 
+                final android.app.AlertDialog waitingdialog = new SpotsDialog(RegisterationActivity.this);
+                waitingdialog.show();
                 //register new user.....
 
                 mAuth.createUserWithEmailAndPassword(edtEmail.getText().toString(), edtpass.getText().toString())
@@ -445,13 +477,13 @@ public class RegisterationActivity extends AppCompatActivity {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                Snackbar.make(rootlayout, "Registered Successfully", Snackbar.LENGTH_SHORT).
+                                                Snackbar.make(view, "Registered Successfully", Snackbar.LENGTH_LONG).
                                                         show();
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Snackbar.make(rootlayout, "Failed" + e.getMessage(), Snackbar.LENGTH_SHORT).
+                                        Snackbar.make(view, "Failed" + e.getMessage(), Snackbar.LENGTH_LONG).
                                                 show();
                                     }
                                 });
@@ -459,7 +491,7 @@ public class RegisterationActivity extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Snackbar.make(rootlayout, "Failed" + e.getMessage(), Snackbar.LENGTH_SHORT).
+                        Snackbar.make(view, "Failed" + e.getMessage(), Snackbar.LENGTH_LONG).
                                 show();
                     }
                 });
@@ -503,7 +535,7 @@ public class RegisterationActivity extends AppCompatActivity {
 
         signin_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 //check validation....
                 if (TextUtils.isEmpty(edtlEmail.getText().toString())) {
                     Snackbar.make(view, "Please enter Email Address", Snackbar.LENGTH_SHORT).show();
@@ -537,8 +569,10 @@ public class RegisterationActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         waitingdialog.dismiss();
-                        Snackbar.make(rootlayout, "Failed : " + e.getMessage(), Snackbar.LENGTH_SHORT).
-                                show();
+//                        Snackbar.make(view, "Failed : " + e.getMessage(), Snackbar.LENGTH_LONG).
+//                                show();
+
+//                        Toast.makeText(RegisterationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         btnsignin.setEnabled(true);
                     }
                 });
