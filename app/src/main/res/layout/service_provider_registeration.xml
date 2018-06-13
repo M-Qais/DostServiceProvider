@@ -55,7 +55,6 @@
         android:gravity="center"
         android:orientation="vertical"
         android:layout_above="@+id/signinButtons"
-        android:visibility="gone"
         >
 
         <LinearLayout
@@ -80,16 +79,10 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:textColorHint="@android:color/white"
+                android:hint="@string/enter_number"
                 android:inputType="phone"/>
 
         </LinearLayout>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/continure"
-            android:id="@+id/continu_button"
-            />
 
     </LinearLayout>
 

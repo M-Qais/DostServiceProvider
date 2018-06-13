@@ -78,8 +78,6 @@ public class RegisterationActivity extends AppCompatActivity {
 
     CountryCodePicker ccp;
     AppCompatEditText edtPhoneNumber;
-    private Button continueButton;
-
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -165,8 +163,6 @@ public class RegisterationActivity extends AppCompatActivity {
 
         ccp = (CountryCodePicker) findViewById(R.id.ccp);
         edtPhoneNumber = (AppCompatEditText) findViewById(R.id.phone_number_edt);
-
-        continueButton = (Button) findViewById(R.id.continu_button);
 
     }
 
@@ -323,10 +319,10 @@ public class RegisterationActivity extends AppCompatActivity {
             }
         });
 
-        continueButton.setOnClickListener(new View.OnClickListener() {
+        edtPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(RegisterationActivity.this)
+               /* new AlertDialog.Builder(RegisterationActivity.this)
                         .setTitle("Confirme")
                         .setMessage("Is " + edtPhoneNumber.getText().toString() + " your correct Phone number ?")
                         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -335,7 +331,9 @@ public class RegisterationActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 Toast.makeText(RegisterationActivity.this, "Yaay", Toast.LENGTH_SHORT).show();
                             }})
-                        .setNegativeButton(android.R.string.no, null).show();
+                        .setNegativeButton(android.R.string.no, null).show();*/
+
+               startActivity(new Intent(RegisterationActivity.this, enterNumber.class));
             }
         });
 
