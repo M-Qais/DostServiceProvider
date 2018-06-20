@@ -1,10 +1,8 @@
 package com.zillion.dost;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -16,15 +14,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -35,10 +32,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -49,21 +42,23 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.rilixtech.CountryCodePicker;
+import com.zillion.dost.Common.Common;
 import com.zillion.dost.Model.User;
-
-import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class RegisterationActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
-    Button btnsignin;
+//    Button btnsignin;
     Button btnRegister;
     RelativeLayout rootlayout;
     private FirebaseAuth mAuth;
@@ -78,6 +73,14 @@ public class RegisterationActivity extends AppCompatActivity {
 
     CountryCodePicker ccp;
     AppCompatEditText edtPhoneNumber;
+
+
+    //
+
+    TextView register_here;
+     Button signin_button ;
+    MaterialEditText edtlEmail;
+    MaterialEditText edtlpass;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -100,7 +103,7 @@ public class RegisterationActivity extends AppCompatActivity {
         init();
         Listeners();
 
-        ccp.registerPhoneNumberTextView(edtPhoneNumber);
+//        ccp.registerPhoneNumberTextView(edtPhoneNumber);
 
 //        init for firebase
         mAuth = FirebaseAuth.getInstance();
@@ -108,7 +111,7 @@ public class RegisterationActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
-                    Intent googleintent = new Intent(RegisterationActivity.this, Booking.class);
+                    Intent googleintent = new Intent(LoginActivity.this, Booking.class);
                     startActivity(googleintent);
 
 
@@ -117,16 +120,16 @@ public class RegisterationActivity extends AppCompatActivity {
         };
 
         if (mAuth.getCurrentUser() != null) {
-            Intent i = new Intent(RegisterationActivity.this, Booking.class);
+            Intent i = new Intent(LoginActivity.this, Booking.class);
             startActivity(i);
         }
 
         db = FirebaseDatabase.getInstance();
         users = db.getReference("Users");
-        loginThroughFb();
+//        loginThroughFb();
         //google sign in options...
         // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        /*GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
@@ -134,20 +137,17 @@ public class RegisterationActivity extends AppCompatActivity {
                 enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Toast.makeText(RegisterationActivity.this, "you got some Error..", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "you got some Error..", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-
+                .build();*/
     }
-
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleSignInClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
-        final android.app.AlertDialog waitingdialog = new SpotsDialog(RegisterationActivity.this);
+        final android.app.AlertDialog waitingdialog = new SpotsDialog(LoginActivity.this);
         waitingdialog.show();
         //addedd
     }
@@ -155,14 +155,21 @@ public class RegisterationActivity extends AppCompatActivity {
     //initialization for th evariables......
     public void init() {
 
-        btnsignin = findViewById(R.id.btn_signin);
-        btnRegister = findViewById(R.id.btn_register);
+//        btnsignin = findViewById(R.id.btn_signin);
+//        btnRegister = findViewById(R.id.btn_register);
         rootlayout = findViewById(R.id.root_layout);
-        mGooglesignin = findViewById(R.id.login_google_btn);
+//        mGooglesignin = findViewById(R.id.login_google_btn);
 //        serviceproviderlayout=findViewById(R.id.service_provider_layout);
 
         ccp = (CountryCodePicker) findViewById(R.id.ccp);
         edtPhoneNumber = (AppCompatEditText) findViewById(R.id.phone_number_edt);
+
+        //text view of regsiter here
+
+        register_here=findViewById(R.id.register_screent_txt);
+        signin_button = findViewById(R.id.login_dialog_Signin_button);
+         edtlEmail = findViewById(R.id.etEmail);
+          edtlpass = findViewById(R.id.etPassword);
 
     }
 
@@ -243,7 +250,6 @@ public class RegisterationActivity extends AppCompatActivity {
 
     }
 
-
     //for handling facebook token....
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d("checek", "handleFacebookAccessToken:" + token);
@@ -257,12 +263,12 @@ public class RegisterationActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("check", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(RegisterationActivity.this, "Login successfull", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Login successfull", Toast.LENGTH_SHORT).show();
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("check", "signInWithCredential:failure", task.getException());
-                            Toast.makeText(RegisterationActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
 //                            updateUI(null);
                         }
@@ -271,9 +277,6 @@ public class RegisterationActivity extends AppCompatActivity {
                     }
                 });
     }
-
-    //update ui
-
 
     @Override
     public void onStart() {
@@ -288,26 +291,86 @@ public class RegisterationActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
 //        Toast.makeText(this, "Login successfull", Toast.LENGTH_SHORT).show();
-        Intent fb_intent = new Intent(RegisterationActivity.this, Booking.class);
+        Intent fb_intent = new Intent(LoginActivity.this, Booking.class);
         startActivity(fb_intent);
 
 
     }
 
-
     //listeners
     public void Listeners() {
 
+        signin_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                //check validation....
+                if (TextUtils.isEmpty(edtlEmail.getText().toString())) {
+                    Snackbar.make(v, "Please enter Email Address", Snackbar.LENGTH_SHORT).show();
+                    return;
+
+                }
+                if (TextUtils.isEmpty(edtlpass.getText().toString())) {
+                    Snackbar.make(v, "Please enter Password", Snackbar.LENGTH_SHORT).show();
+                    return;
+
+                }
+                if (edtlpass.getText().toString().length() < 6) {
+                    Snackbar.make(v, "Please enter Password", Snackbar.LENGTH_SHORT).show();
+                    return;
+
+                }
+
+                final android.app.AlertDialog waitingdialog = new SpotsDialog(LoginActivity.this);
+                waitingdialog.show();
+                //Login.....
+
+                mAuth.signInWithEmailAndPassword(edtlEmail.getText().toString(), edtlpass.getText().toString()).
+                        addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                waitingdialog.dismiss();
+
+                                FirebaseDatabase.getInstance().getReference(Common.user_driver_tbl).child(FirebaseAuth.getInstance().getUid())
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                Common.currentUser = dataSnapshot.getValue(User.class);
+
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                startActivity(new Intent(LoginActivity.this, Booking.class));
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        waitingdialog.dismiss();
+                     Snackbar.make(v, "Failed : " + e.getMessage(), Snackbar.LENGTH_LONG).show();
+
+//                      Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        signin_button.setEnabled(true);
+                    }
+                });
+            }
+        });
+/*
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showRegisterDialog();
+//                showRegisterDialog();
             }
         });
         btnsignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showLogindialog();
+//                showLogindialog();
+                loginwork();
             }
         });
         loginButton = findViewById(R.id.login_fb_button);
@@ -322,22 +385,31 @@ public class RegisterationActivity extends AppCompatActivity {
         edtPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               /* new AlertDialog.Builder(RegisterationActivity.this)
+               *//* new AlertDialog.Builder(LoginActivity.this)
                         .setTitle("Confirme")
                         .setMessage("Is " + edtPhoneNumber.getText().toString() + " your correct Phone number ?")
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                Toast.makeText(RegisterationActivity.this, "Yaay", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Yaay", Toast.LENGTH_SHORT).show();
                             }})
-                        .setNegativeButton(android.R.string.no, null).show();*/
+                        .setNegativeButton(android.R.string.no, null).show();*//*
 
-               startActivity(new Intent(RegisterationActivity.this, enterNumber.class));
+               startActivity(new Intent(LoginActivity.this, enterNumber.class));
+            }
+        });*/
+
+
+        register_here.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
 
     }
+
 
 
     @Override
@@ -356,7 +428,7 @@ public class RegisterationActivity extends AppCompatActivity {
 
     public void dialogueForExit(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                RegisterationActivity.this);
+                LoginActivity.this);
         // set title
         alertDialogBuilder.setTitle("Exit");
         alertDialogBuilder.setCancelable(true);
@@ -409,7 +481,7 @@ public class RegisterationActivity extends AppCompatActivity {
 
         Button register_button = view.findViewById(R.id.dialog_register_button);
 
-        final AlertDialog alertDialog = new AlertDialog.Builder(RegisterationActivity.this)
+        final AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this)
                 .setView(view)
 //                .setPositiveButton(android.R.string.ok, null)
 //                .setNegativeButton(android.R.string.cancel, null)
@@ -454,7 +526,7 @@ public class RegisterationActivity extends AppCompatActivity {
                     return;
                 }
 
-                final android.app.AlertDialog waitingdialog = new SpotsDialog(RegisterationActivity.this);
+                final android.app.AlertDialog waitingdialog = new SpotsDialog(LoginActivity.this);
                 waitingdialog.show();
                 //register new user.....
 
@@ -506,7 +578,6 @@ public class RegisterationActivity extends AppCompatActivity {
     }
 
     //dialogue for login button....
-
     private void showLogindialog() {
 
        /* AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -521,7 +592,7 @@ public class RegisterationActivity extends AppCompatActivity {
         final Button signin_button = view.findViewById(R.id.login_dialog_Signin_button);
 
 //        dialog.setView(view);
-        final AlertDialog alertDialoglogin = new AlertDialog.Builder(RegisterationActivity.this)
+        final AlertDialog alertDialoglogin = new AlertDialog.Builder(LoginActivity.this)
                 .setView(view)
 //                .setPositiveButton(android.R.string.ok, null)
 //                .setNegativeButton(android.R.string.cancel, null)
@@ -551,7 +622,7 @@ public class RegisterationActivity extends AppCompatActivity {
 
                 }
 
-                final android.app.AlertDialog waitingdialog = new SpotsDialog(RegisterationActivity.this);
+                final android.app.AlertDialog waitingdialog = new SpotsDialog(LoginActivity.this);
                 waitingdialog.show();
                 //Login.....
 
@@ -560,7 +631,7 @@ public class RegisterationActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(AuthResult authResult) {
                                 waitingdialog.show();
-                                startActivity(new Intent(RegisterationActivity.this, Booking.class));
+                                startActivity(new Intent(LoginActivity.this, Booking.class));
                                 finish();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -570,8 +641,8 @@ public class RegisterationActivity extends AppCompatActivity {
 //                        Snackbar.make(view, "Failed : " + e.getMessage(), Snackbar.LENGTH_LONG).
 //                                show();
 
-//                        Toast.makeText(RegisterationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        btnsignin.setEnabled(true);
+//                        Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        signin_button.setEnabled(true);
                     }
                 });
             }

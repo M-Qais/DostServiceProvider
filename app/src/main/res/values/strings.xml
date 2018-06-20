@@ -4,8 +4,8 @@
     <string name="fb_login_protocol_scheme">fb227726657960269</string>
     <string name="title_activity_booking">Map</string>
     <string name="google_direction_api">AIzaSyAZi21CpeikwEMCK9rV0dUjSfAZLZgc3p4</string>
-    <string name="linktodostapp">Looking to Order through DOST App...</string>
-    <string name="sign_in">Sign In</string>
+    <string name="linktodostapp">You have not account Registered ?  </string>
+    <string name="sign_in">Sign in</string>
     <string name="register">REGISTER</string>
     <string name="dost">D O S T</string>
     <string name="service_provider">Service Provider</string>

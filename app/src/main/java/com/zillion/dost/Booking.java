@@ -204,7 +204,7 @@ public class Booking extends FragmentActivity implements OnMapReadyCallback,
 
                 if (firebaseAuth.getCurrentUser() == null) {
 
-                    Intent googleintent = new Intent(Booking.this, RegisterationActivity.class);
+                    Intent googleintent = new Intent(Booking.this, LoginActivity.class);
                     startActivity(googleintent);
 
                 }

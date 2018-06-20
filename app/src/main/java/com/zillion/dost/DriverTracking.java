@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,8 +36,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.zillion.dost.Common.Common;
 import com.zillion.dost.Helper.DirectionJSONParser;
+import com.zillion.dost.Model.FCMResponse;
+import com.zillion.dost.Model.Notification;
+import com.zillion.dost.Model.Sender;
+import com.zillion.dost.Model.Token;
+import com.zillion.dost.Remote.IFCMService;
 import com.zillion.dost.Remote.IGoogleAPI;
 
 import org.json.JSONException;
@@ -46,14 +54,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DriverTracking extends FragmentActivity implements OnMapReadyCallback ,GoogleApiClient.ConnectionCallbacks,
+public class DriverTracking extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
     private GoogleMap mMap;
-    double riderLat,riderLng;
+    double riderLat, riderLng;
     //play services initialization...
     //play service...
 
@@ -68,6 +77,11 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
     private Circle riderMarker;
     private Marker driverMarker;
     IGoogleAPI mService;
+
+    String customerId;
+
+    IFCMService mfcmService;
+    GeoFire geoFire;
     private com.google.android.gms.maps.model.Polyline direction;
 
     @Override
@@ -79,14 +93,19 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        if(getIntent()!=null)
-        {
+        if (getIntent() != null) {
 
             //gettting intent data by using get intent functionality and the type is double .. :-)
-            riderLat = getIntent().getDoubleExtra("lat",-1.0);
-            riderLng = getIntent().getDoubleExtra("lng",-1.0);
+            riderLat = getIntent().getDoubleExtra("lat", -1.0);
+            riderLng = getIntent().getDoubleExtra("lng", -1.0);
+
+            customerId = getIntent().getStringExtra("customerId");
+
+
         }
         mService = Common.getGoogleAPI();
+        mfcmService = Common.getFCMService();
+
 
         setUpLocation();
     }
@@ -94,12 +113,12 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
     private void setUpLocation() {
 
 
-            if (checkplayservices()) {
+        if (checkplayservices()) {
 
-                buildGoogleApiClient();
-                createLocationRequest();
-                displayLocation();
-            }
+            buildGoogleApiClient();
+            createLocationRequest();
+            displayLocation();
+        }
     }
 
     private void displayLocation() {
@@ -115,40 +134,38 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
             final double latitude = Common.mLAstLocation.getLatitude();
             final double longitude = Common.mLAstLocation.getLongitude();
 
-            if(driverMarker!=null)
+            if (driverMarker != null)
 
                 driverMarker.remove();
-                driverMarker =mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
-                .title("You")
-                .icon(BitmapDescriptorFactory.defaultMarker()));
-
+            driverMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
+                    .title("You")
+                    .icon(BitmapDescriptorFactory.defaultMarker()));
 
 
 //                mMap.animateCamera(cam.newLatLngZoom(new LatLng(latitude,longitude),17.0f));.
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude),17.0f));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17.0f));
 
-            if(direction!=null)
+            if (direction != null)
                 direction.remove();  //this will remove old direction..
-                getDirection();
+            getDirection();
+
+        } else {
+            Log.d("check", "cannot get your location");
 
         }
-          else {
-                Log.d("check", "cannot get your location");
+    }
 
-            }
-        }
+    private void getDirection() {
 
-    private void getDirection(){
-
-         LatLng currentPosition = new LatLng(Common.mLAstLocation.getLatitude(), Common.mLAstLocation.getLongitude());
+        LatLng currentPosition = new LatLng(Common.mLAstLocation.getLatitude(), Common.mLAstLocation.getLongitude());
         String requestApi = null;
         try {
-            requestApi = "https://maps.googleapis.com/maps/api/directions/json?"+
-                    "mode=driving&"+
+            requestApi = "https://maps.googleapis.com/maps/api/directions/json?" +
+                    "mode=driving&" +
                     "transit_routing_preference=less_driving&" +
-                    "origin="+currentPosition.latitude+","+currentPosition.longitude+"&"+
-                    "destination="+riderLat+","+riderLng+"&"+
-                    "key="+getResources().getString(R.string.google_direction_api);
+                    "origin=" + currentPosition.latitude + "," + currentPosition.longitude + "&" +
+                    "destination=" + riderLat + "," + riderLng + "&" +
+                    "key=" + getResources().getString(R.string.google_direction_api);
 
             Log.d("chk", requestApi);
             mService.getPath(requestApi)
@@ -177,8 +194,7 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
 
     }
 
-    private class ParserTask extends AsyncTask<String,Integer,List<List<HashMap<String,String>>>>
-    {
+    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
         ProgressDialog mDialog = new ProgressDialog(DriverTracking.this);
 
         @Override
@@ -202,31 +218,30 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
                 e.printStackTrace();
             }
 
-         return  routes;
+            return routes;
         }
 
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
             mDialog.dismiss();
-            ArrayList points=null;
+            ArrayList points = null;
             PolylineOptions polylineOptions = null;
 
 
-            for(int i = 0;i<lists.size();i++)
-            {
+            for (int i = 0; i < lists.size(); i++) {
 
                 points = new ArrayList();
                 polylineOptions = new PolylineOptions();
 
-                List<HashMap<String,String >> path = lists.get(i);
+                List<HashMap<String, String>> path = lists.get(i);
 
-                for(int j =0;j<path.size();j++){
+                for (int j = 0; j < path.size(); j++) {
 
-                    HashMap<String,String> point = path.get(j);
-                    double lat =Double.parseDouble(point.get("lat"));
-                    double lng =Double.parseDouble(point.get("lng"));
+                    HashMap<String, String> point = path.get(j);
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
 
-                    LatLng position = new LatLng(lat,lng);
+                    LatLng position = new LatLng(lat, lng);
                     points.add(position);
                 }
 
@@ -291,13 +306,73 @@ public class DriverTracking extends FragmentActivity implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         riderMarker = mMap.addCircle(new CircleOptions()
-        .center(new LatLng(riderLat,riderLng))
-                .radius(10)
+                .center(new LatLng(riderLat, riderLng))
+                .radius(50)  //radius is 50 meters ...
                 .strokeColor(Color.BLUE)
-                .fillColor(0*22000)
-                .strokeWidth(7.0f)
+                .fillColor(0 * 22000)
+                .strokeWidth(7.0f));
 
-        );
+        //createing geofence with radisu of 50 meters..
+        geoFire = new GeoFire(FirebaseDatabase.getInstance().getReference(Common.driver_tbl));
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(riderLat,riderLng),0.05f);
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+
+                //here we need customer id (rider id ) to send notification
+                //so,we will pass it from previosu activity (customer call)
+                sendArrivedNotification(customerId);
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+    private void sendArrivedNotification(String customerId) {
+
+        Token token = new Token(customerId);
+        Notification notification = new Notification("Arrived",String.format("the driver %s has arrived at your location...",Common.currentUser.getName()));
+        Sender sender = new Sender(token.getToken(),notification);
+
+        mfcmService.sendMessage(sender).enqueue(new Callback<FCMResponse>() {
+            @Override
+            public void onResponse(Call<FCMResponse> call, Response<FCMResponse> response) {
+                if(response.body().success!=1){
+
+
+                    Toast.makeText(DriverTracking.this, "Failed", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<FCMResponse> call, Throwable t) {
+
+            }
+        });
+
+
     }
 
     @Override

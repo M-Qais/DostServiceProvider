@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardMaxElevation="10dp">
+    app:cardMaxElevation="10dp"
+    android:background="@drawable/register_gradient">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/logo_reg"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/dost_logo"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:orientation="vertical"
-        tools:ignore="UselessParent">
+        tools:ignore="UselessParent"
+        android:layout_below="@+id/logo_reg">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,7 +43,7 @@
                 android:layout_weight="0.5"
                 android:gravity="center"
                 android:text="@string/register"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@android:color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -52,14 +62,14 @@
             android:hint="@string/email"
             android:inputType="textEmailAddress"
             android:text=""
-            android:textColor="@color/colorPrimaryDark"
-            android:textColorHint="@color/colorPrimaryDark"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
             android:textSize="23sp"
             app:met_baseColor="@color/colorPrimary"
             app:met_floatingLabel="highlight"
-            app:met_primaryColor="@color/colorPrimary"
+            app:met_primaryColor="@android:color/black"
             app:met_singleLineEllipsis="true"
-            app:met_textColorHint="@color/colorPrimaryDark" />
+            app:met_textColorHint="@android:color/black" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/etName"
@@ -68,14 +78,14 @@
             android:hint="@string/name"
             android:inputType="textPersonName"
             android:text=""
-            android:textColor="@color/colorPrimaryDark"
-            android:textColorHint="@color/colorPrimaryDark"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
             android:textSize="23sp"
-            app:met_baseColor="@color/colorPrimary"
+            app:met_baseColor="@android:color/black"
             app:met_floatingLabel="highlight"
-            app:met_primaryColor="@color/colorPrimary"
+            app:met_primaryColor="@android:color/black"
             app:met_singleLineEllipsis="true"
-            app:met_textColorHint="@color/colorPrimaryDark" />
+            app:met_textColorHint="@android:color/black" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/etPassword"
@@ -84,14 +94,14 @@
             android:hint="@string/password"
             android:inputType="textPassword"
             android:text=""
-            android:textColor="@color/colorPrimaryDark"
-            android:textColorHint="@color/colorPrimaryDark"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
             android:textSize="23sp"
-            app:met_baseColor="@color/colorPrimary"
+            app:met_baseColor="@android:color/black"
             app:met_floatingLabel="highlight"
-            app:met_primaryColor="@color/colorPrimary"
+            app:met_primaryColor="@android:color/black"
             app:met_singleLineEllipsis="true"
-            app:met_textColorHint="@color/colorPrimaryDark" />
+            app:met_textColorHint="@android:color/black" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/etPhone"
@@ -100,14 +110,14 @@
             android:hint="@string/phone"
             android:inputType="textEmailAddress"
             android:text=""
-            android:textColor="@color/colorPrimaryDark"
-            android:textColorHint="@color/colorPrimaryDark"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
             android:textSize="23sp"
-            app:met_baseColor="@color/colorPrimary"
+            app:met_baseColor="@android:color/black"
             app:met_floatingLabel="highlight"
-            app:met_primaryColor="@color/colorPrimary"
+            app:met_primaryColor="@android:color/black"
             app:met_singleLineEllipsis="true"
-            app:met_textColorHint="@color/colorPrimaryDark" />
+            app:met_textColorHint="@android:color/black" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/etProfession"
@@ -116,24 +126,24 @@
             android:hint="@string/profession"
             android:inputType="textEmailAddress"
             android:text=""
-            android:textColor="@color/colorPrimaryDark"
-            android:textColorHint="@color/colorPrimaryDark"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black"
             android:textSize="23sp"
-            app:met_baseColor="@color/colorPrimary"
+            app:met_baseColor="@android:color/black"
             app:met_floatingLabel="highlight"
-            app:met_primaryColor="@color/colorPrimary"
+            app:met_primaryColor="@android:color/black"
             app:met_singleLineEllipsis="true"
-            app:met_textColorHint="@color/colorPrimaryDark" />
+            app:met_textColorHint="@android:color/black" />
 
         <Button
             android:id="@+id/dialog_register_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:background="@android:color/black"
             android:text="@string/register"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

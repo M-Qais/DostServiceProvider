@@ -77,6 +77,8 @@ public class CustommerCall extends AppCompatActivity {
                 //send customer location to new activity using put extra :-)
                 intent.putExtra("lat",lat);
                 intent.putExtra("lng",lng);
+//put extraa :-) to send the customer id to next activity,....,...,.,.,.
+                intent.putExtra("customerId",customerId);
                 startActivity(intent);
                 finish();
             }
